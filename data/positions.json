@@ -1,0 +1,8 @@
+[
+  {"id":"molinism","title":"Molinism","description":"Providence through prevolitional knowledge of creaturely counterfactuals.","selections":{"OMNI-K":"affirm","FOREKNOWLEDGE":"affirm","LIBERTARIAN":"affirm","MIDDLE-KNOWLEDGE":"affirm","FUTURE-TRUTH":"affirm"}},
+  {"id":"open-theism","title":"Open theism","description":"A dynamic providence in which some future free acts are not settled truths.","selections":{"OMNI-K":"affirm","LIBERTARIAN":"affirm","OPEN-FUTURE":"affirm","TEMPORAL":"affirm"}},
+  {"id":"classical-theism","title":"Classical theism","description":"A strong cluster of classical divine attributes, without settling every account of freedom.","selections":{"OMNI-K":"affirm","OMNI-P":"affirm","GOOD":"affirm","NECESSARY-GOD":"affirm","TIMELESS":"affirm","IMMUTABLE":"affirm","SIMPLE":"affirm"}},
+  {"id":"theological-determinism","title":"Theological determinism","description":"Comprehensive divine determination with no presumption of libertarian freedom.","selections":{"OMNI-K":"affirm","FOREKNOWLEDGE":"affirm","FUTURE-TRUTH":"affirm","DETERMINES-ACTIONS":"affirm"}},
+  {"id":"simple-foreknowledge","title":"Simple foreknowledge","description":"Exhaustive prior knowledge without middle knowledge as the basis of providence.","selections":{"OMNI-K":"affirm","FOREKNOWLEDGE":"affirm","FUTURE-TRUTH":"affirm","MIDDLE-KNOWLEDGE":"deny"}},
+  {"id":"temporal-freewill-theism","title":"Temporal free-will theism","description":"A temporal God and libertarian creatures, while leaving future truth open.","selections":{"OMNI-K":"affirm","TEMPORAL":"affirm","LIBERTARIAN":"affirm","PAP":"affirm"}}
+]
