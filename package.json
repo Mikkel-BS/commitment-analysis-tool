@@ -1,1 +1,1 @@
-{"name":"commitment-analysis-tool","private":true,"type":"module","scripts":{"test":"node scripts/validate.mjs && node scripts/validate-norway.mjs","test:norway":"node scripts/validate-norway.mjs","serve":"python3 -m http.server 4173"}}
+{"name":"commitment-analysis-tool","private":true,"type":"module","scripts":{"test":"node scripts/validate.mjs && node scripts/validate-norway.mjs && node --test scripts/test-areas.mjs","test:norway":"node scripts/validate-norway.mjs","serve":"python3 -m http.server 4173"}}

@@ -2,11 +2,14 @@
 
 ## Project purpose
 
-Commitment Atlas is a static, client-side tool for examining entailments, incompatibilities, and dialectical tensions among commitments in philosophy of religion. It maps arguments and assumptions; it must not present disputed philosophical judgments as settled logical contradictions.
+Commitment Atlas is a static, client-side tool with selectable philosophy-of-religion and Norwegian-policy areas. It maps arguments and assumptions; it must not present disputed judgments as settled logical contradictions.
 
 ## Repository structure
 
 - `index.html`, `styles.css`, `app.js`: dependency-free browser application.
+- `areas.js`: area registry, dataset normalization, evaluator dispatch and share-link handling.
+- `data/norway/`: Norwegian policy research corpus; read its README and AUDIT before changing its semantics.
+- `scripts/norway-engine.mjs`: conditional policy evaluator; does not verify assumptions or derive beliefs.
 - `data/claims.json`: atomic commitments and their definitions.
 - `data/rules.json`: entailments, incompatibilities, and tensions.
 - `data/positions.json`: editable starting templates, not definitions of users.
@@ -21,6 +24,7 @@ Commitment Atlas is a static, client-side tool for examining entailments, incomp
 - Prefer browser-native HTML, CSS, and JavaScript. Do not introduce a build system or runtime dependency without a clear need.
 - Preserve responsive behavior and basic keyboard/semantic accessibility.
 - Store user selections locally or in shareable URL state; do not add tracking or transmit selections.
+- Keep area sessions isolated. Share selections/context only after an explicit user action; preserve legacy philosophy links. Policy findings require the same scenario scope and must retain their conditional status.
 - Do not edit generated deployment output. The repository root is the deployed artifact.
 
 ## Philosophical content rules

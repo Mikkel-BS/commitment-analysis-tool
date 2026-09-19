@@ -1,6 +1,16 @@
 # Commitment Atlas
 
-An interactive, client-side commitment analysis tool for philosophy of religion. Users affirm or deny atomic claims; the app exposes consequences and tensions while keeping disputed assumptions visible.
+An interactive, client-side commitment analysis tool with two selectable areas: philosophy of religion and Norwegian politics. Users affirm, deny or leave statements undecided; the app exposes relationships while keeping assumptions visible.
+
+## Choosing an area
+
+Use **Choose an area** above the main workspace. Each area retains its own selections, filters and context for the current tab session. Reloading clears unshared work. Philosophy uses position templates; Norwegian politics uses explicitly synthetic scenarios, not party platforms.
+
+Norwegian policy mode asks for scenario context and confirmation that the selected statements share the same scope. Missing fields or confirmation produce **Needs context**, not a finding. Completed findings remain conditional: the application does not verify facts, costings, legal claims or policy assumptions. Changing a selection or context requires confirming scope again.
+
+**Copy a link to this map** explicitly exports only the current area's selections and context as a URL fragment. Recipients must confirm scope themselves. Old philosophy query links remain readable. Choices are never automatically written to the URL or sent to an analytics service. There are no external font requests.
+
+`areas.js` is the area registry, normalization, evaluation adapter and share-link codec. `app.js` renders the shared interface. The policy adapter calls `scripts/norway-engine.mjs`; philosophy retains direct rule matching. Adding an area requires a registered dataset, a suitable evaluator and adapter tests.
 
 ## Run locally
 

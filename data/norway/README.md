@@ -1,6 +1,6 @@
 # Norwegian political coherence — research corpus 0.1
 
-This is a separate, Norwegian Bokmål data module. It does not replace the philosophy dataset and is not yet connected to the website interface.
+This is a separate, Norwegian Bokmål data module. Select **Norwegian politics** in the website's area selector to use it. It does not replace the philosophy dataset.
 
 ## What the records mean
 
@@ -52,4 +52,4 @@ Current statutory targets, EEA/procurement rules, Sami rights and consultation, 
 
 Run `npm test` and `git diff --check`. For every new rule add a trigger, remove each premise in turn, reverse its polarity, leave it undecided, remove context, and add at least one substantive near-miss scenario. Record source changes and semantic changes in version history. Review on the manifest's date or when its listed events occur; a review date is metadata, not an automated monitoring task.
 
-Future UI must keep scenario assumptions visible, distinguish lack of evidence from rejection, and show limitations alongside warnings. No political preference analytics or automatic URL sharing. This module changes no current UI behavior.
+The UI keeps scenario assumptions visible, distinguishes lack of evidence from rejection, and shows limitations alongside warnings. It requires common-scope confirmation and exposes missing context. No political preference analytics or automatic URL sharing. The interface does not independently validate user-supplied evidence.

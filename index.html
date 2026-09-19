@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Explore the entailments, tensions, and disputed assumptions among positions in philosophy of religion." />
+  <meta name="description" content="Explore commitments in philosophy of religion and Norwegian politics, with explicit assumptions and sources." />
+  <meta name="referrer" content="no-referrer" />
   <title>Commitment Atlas</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -21,17 +19,36 @@
   </header>
 
   <main>
+    <section class="area-bar" aria-label="Analysis area">
+      <div><label for="area-select">Choose an area</label>
+        <select id="area-select" aria-describedby="area-description" disabled>
+          <option value="philosophy">Philosophy of religion</option>
+          <option value="norway">Norwegian politics · Norsk politikk</option>
+        </select>
+      </div>
+      <p id="area-description" role="status">Loading areas…</p>
+    </section>
+    <noscript><p>This tool needs JavaScript to load datasets and analyze selections.</p></noscript>
     <section id="explore-view">
       <div class="hero">
         <p class="eyebrow">An instrument for intellectual self-audit</p>
-        <h1>What else follows from<br><em>what you believe?</em></h1>
-        <p class="lede">Choose your commitments. We’ll trace their consequences, reveal points of pressure, and show exactly where the disputed steps lie.</p>
+        <h1 id="hero-title">What else follows from<br><em>what you believe?</em></h1>
+        <p class="lede" id="hero-lede">Choose an area to begin exploring commitments and their relationships.</p>
         <div class="hero-actions">
-          <button class="button primary" id="begin-button">Begin with no assumptions <span>↓</span></button>
-          <button class="button secondary" id="template-button">Start from a position</button>
+          <button class="button primary" id="begin-button" disabled>Explore statements <span>↓</span></button>
+          <button class="button secondary" id="template-button" disabled>Start from a position</button>
         </div>
-        <p class="hero-note">No account · No data leaves your browser</p>
+        <p class="hero-note">No account · Selections stay in this tab unless you share a link · Reloading clears unshared work</p>
       </div>
+
+      <section id="policy-context" class="context-panel" hidden>
+        <h2>Scenario context / Avgrensning</h2>
+        <p id="example-notice"></p>
+        <p><strong>Bekreft</strong> accepts the exact statement. <strong>Avvis</strong> rejects it. Use <strong>Uavklart</strong> when unsure—especially for factual assumptions.</p>
+        <p>Use one actor, period and baseline throughout. Add the project, location and accounting boundaries required by each rule. Leave unknown details blank. These fields do not verify the evidence.</p>
+        <div id="context-fields" class="context-fields"></div>
+        <label class="scope-check"><input type="checkbox" id="scope-confirmed"> I have checked that all selected statements refer to this same scenario and its relevant boundaries.</label>
+      </section>
 
       <section class="workspace" id="workspace">
         <aside class="sidebar">
@@ -59,35 +76,32 @@
           </div>
           <div class="score-ring" id="score-ring"><div><strong id="selection-count">0</strong><span>decided</span></div></div>
           <div class="summary-grid">
-            <div><strong id="consequence-count">0</strong><span>consequences</span></div>
-            <div><strong id="tension-count">0</strong><span>tensions</span></div>
+            <div><strong id="consequence-count">0</strong><span id="consequence-label">consequences</span></div>
+            <div><strong id="tension-count">0</strong><span id="tension-label">tensions / conflicts</span></div>
           </div>
+          <p id="analysis-status" role="status" class="analysis-status"></p>
+          <p id="policy-notice" class="policy-notice" hidden>Research prototype. Assumptions are supplied by you, not verified facts. No party ranking, legal verdict or general proof of coherence.</p>
           <div id="analysis-results" class="analysis-results">
             <div class="empty-state"><span>◇</span><h3>A clearer map begins here.</h3><p>Make a few selections to reveal their connections.</p></div>
           </div>
-          <button id="share-button" class="share-button">Copy a link to this map</button>
+          <p class="share-note">Sharing includes this area’s selections and scenario text. Anyone with the link can read them.</p>
+          <button id="share-button" class="share-button" disabled>Copy a link to this map</button>
+          <div id="share-output" hidden><label for="share-link">Shareable link</label><input id="share-link" readonly></div>
         </aside>
       </section>
     </section>
 
     <section id="method-view" class="method-view hidden">
       <p class="eyebrow">How to read the analysis</p>
-      <h1>Pressure is not contradiction.</h1>
-      <p class="method-intro">The Atlas keeps formal consequence separate from philosophical argument. It shows a warning only when all of a rule’s explicit premises are selected, and every conclusion retains its provenance.</p>
-      <div class="method-grid">
-        <article><span>01</span><h2>Claims are atomic</h2><p>Labels such as “Molinist” are only starting points. The analysis operates on the individual propositions you actually select.</p></article>
-        <article><span>02</span><h2>Strength is visible</h2><p>Formal and conceptual results are separated from widely defended, contested, and interpretation-dependent arguments.</p></article>
-        <article><span>03</span><h2>Assumptions stay exposed</h2><p>A relation fires only when its load-bearing premises are present. Objections and possible replies remain attached to the result.</p></article>
-      </div>
-      <div class="method-note"><strong>Editorial principle</strong><p>The database maps a dialectic; it does not pronounce which position is true. Claims and rules are version-controlled and open to criticism.</p></div>
+      <div id="method-content"></div>
     </section>
   </main>
 
-  <dialog id="template-dialog">
+  <dialog id="template-dialog" aria-labelledby="template-title">
     <button class="dialog-close" aria-label="Close">×</button>
     <p class="eyebrow">Choose a starting point</p>
-    <h2>Position templates</h2>
-    <p>Templates prefill common commitments. They are sketches, not definitions—and every selection remains editable.</p>
+    <h2 id="template-title">Position templates</h2>
+    <p id="template-description">Every selection remains editable.</p>
     <div id="template-list" class="template-list"></div>
   </dialog>
 

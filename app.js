@@ -1,50 +1,162 @@
-const load = name => fetch(`data/${name}.json`).then(r => { if (!r.ok) throw new Error(`Could not load ${name}`); return r.json(); });
-const [claims, rules, positions, sources] = await Promise.all(['claims','rules','positions','sources'].map(load));
-const sourceMap = Object.fromEntries(sources.map(s => [s.id, s]));
-const state = { selections: {}, category: 'All', search: '', expanded: new Set() };
-
-function encodeState(){ const p = new URLSearchParams(); Object.entries(state.selections).forEach(([id,v])=>p.set(id,v[0])); history.replaceState(null,'',`${location.pathname}?${p}`); }
-function decodeState(){ const p=new URLSearchParams(location.search); claims.forEach(c=>{ const v=p.get(c.id); if(v==='a') state.selections[c.id]='affirm'; if(v==='d') state.selections[c.id]='deny'; }); }
-function truth(literal){ return state.selections[literal.claim]===literal.polarity; }
-function analyses(){
-  return rules.filter(rule=>rule.premises.every(truth)).map(rule=>{
-    if(rule.conclusion){ const selected=state.selections[rule.conclusion.claim]; const contradicted=selected && selected!==rule.conclusion.polarity; return {...rule,resultType:contradicted?'conflict':'consequence',contradicted}; }
-    return {...rule,resultType:'conflict'};
+import { AREAS, CONTEXT, TYPES, KINDS, newState, normalizeClaims, analyze, shareURL, restoreURL } from './areas.js';
+const $ = selector => document.querySelector(selector);
+const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sessions = {philosophy: newState(), norway: newState()};
+const datasets = {};
+let area = 'philosophy', toastTimer;
+const state = () => sessions[area];
+const dataset = () => datasets[area];
+const policy = () => area === 'norway';
+function toast(message) {
+  $('#toast').textContent = message; $('#toast').classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('show'), 4000);
+}
+async function loadArea(id) {
+  const config = AREAS[id];
+  const values = await Promise.all(['claims','rules','sources',config.templates].map(async name => {
+    const response = await fetch(`${config.base}${name}.json`);
+    if (!response.ok) throw new Error(`Unable to load ${config.label}. Please reload to retry.`);
+    return response.json();
+  }));
+  return {claims: normalizeClaims(id, values[0]), rules: values[1], sources: Object.fromEntries(values[2].map(s => [s.id, s])), templates: values[3]};
+}
+function sourcesHTML(ids) {
+  if (!ids.length) return '<p>Editorial definition / Redaksjonell formulering.</p>';
+  return ids.map(id => {
+    const s = dataset().sources[id];
+    if (!s) return '';
+    return `<p><a href="${escape(s.url)}" target="_blank" rel="noreferrer">${escape(s.title)} ↗</a></p>${s.supports ? `<p>${escape(s.publisher)} · Checked ${escape(s.accessed)}<br>${escape(s.locator)}</p><p><strong>Supports:</strong> ${escape(s.supports)}</p><p><strong>Does not establish:</strong> ${escape(s.doesNotEstablish)}</p>` : ''}`;
+  }).join('');
+}
+function filters() {
+  const counts = new Map();
+  for (const c of dataset().claims) counts.set(c.category, (counts.get(c.category) || 0) + 1);
+  $('#category-filters').innerHTML = [['All', dataset().claims.length], ...counts].map(([name,count]) => `<button class="filter ${state().category === name ? 'active' : ''}" aria-pressed="${state().category === name}" data-category="${escape(name)}">${escape(name)}<span>${count}</span></button>`).join('');
+}
+function claimsView() {
+  const s = state(), claims = dataset().claims;
+  const visible = claims.filter(c => (s.category === 'All' || c.category === s.category) && `${c.id} ${c.title} ${c.statement} ${c.tags.join(' ')}`.toLowerCase().includes(s.search.toLowerCase()));
+  $('#claim-count').textContent = `Showing ${visible.length} of ${claims.length} commitments`;
+  $('#expand-all').textContent = s.expanded.size === claims.length ? 'Collapse all' : 'Expand all';
+  $('#claims-list').innerHTML = visible.map(c => {
+    const selected = s.selections[c.id] || 'undecided', expanded = s.expanded.has(c.id);
+    return `<article class="claim-card ${expanded ? 'expanded' : ''}" lang="${policy() ? 'nb' : 'en'}">
+      <div class="claim-top"><div><div class="claim-category">${escape(c.category)} · ${escape(c.id)}</div>
+      ${policy() ? `<p class="claim-type">${escape(TYPES[c.type])}${c.type === 'assumption' ? ' · Ikke verifisert av verktøyet' : ''}</p>` : ''}
+      <h3>${escape(c.title)}</h3>${policy() ? '' : `<p class="statement">${escape(c.statement)}</p>`}</div></div>
+      <div class="choice-group" role="group" aria-label="${escape(c.title)}">${['affirm','deny','undecided'].map(v => `<button class="choice ${v} ${selected === v ? 'active' : ''}" aria-pressed="${selected === v}" data-id="${c.id}" data-value="${v}">${policy() ? ({affirm:'Bekreft',deny:'Avvis',undecided:'Uavklart'})[v] : ({affirm:'Affirm',deny:'Deny',undecided:'Undecided'})[v]}</button>`).join('')}</div>
+      <button class="detail-toggle" aria-expanded="${expanded}" aria-controls="detail-${c.id}" data-expand="${c.id}">${expanded ? '− Hide note' : '+ Definition & sources'}</button>
+      <div id="detail-${c.id}" class="claim-detail"><p>${escape(c.description)}</p>${sourcesHTML(c.sources)}</div></article>`;
+  }).join('') || '<p class="empty-state">No matching claims. Try another search or category.</p>';
+}
+function resultsView() {
+  const s = state(), items = analyze(area, dataset().rules, s);
+  const count = Object.keys(s.selections).length;
+  $('#selection-count').textContent = count;
+  $('#score-ring').style.background = `conic-gradient(var(--sage) ${count / dataset().claims.length * 360}deg, #304139 0deg)`;
+  $('#consequence-count').textContent = items.filter(r => r.resultType === (policy() ? 'incomplete' : 'consequence')).length;
+  $('#tension-count').textContent = items.filter(r => r.resultType === (policy() ? 'conditional' : 'conflict')).length;
+  $('#analysis-status').textContent = policy() ? `${items.filter(r => r.resultType === 'conditional').length} conditional findings; ${items.filter(r => r.resultType === 'incomplete').length} need context.` : `${items.length} active relations.`;
+  if (!items.length) {
+    $('#analysis-results').innerHTML = `<div class="empty-state"><span>◇</span><h3>${count ? 'No active relations.' : 'A clearer map begins here.'}</h3><p>${count ? 'No warning does not establish coherence. Only the documented rules are checked.' : 'Select statements or load an editable example.'}</p></div>`;
+    return;
+  }
+  $('#analysis-results').innerHTML = items.map(r => {
+    const label = policy() ? (r.resultType === 'incomplete' ? 'Needs context / Mangler avgrensning' : KINDS[r.kind]) : (r.contradicted ? 'Conflict with your selection' : r.resultType === 'consequence' ? 'Consequence' : r.kind);
+    return `<article class="result-card ${r.resultType}" data-rule="${r.id}"><div class="result-label">${escape(label)} · ${escape(r.status)}</div><h3>${escape(r.title)}</h3>
+      ${policy() && r.resultType === 'incomplete' ? `<p>Complete: ${escape([...r.missingContext.map(k => CONTEXT[k]), ...(r.needsScopeConfirmation ? ['confirm a common scope below'] : [])].join('; '))}. This is not yet a finding.</p><a href="#policy-context">Edit scenario context ↓</a>` : ''}
+      <div class="premises">${r.premises.map(p => `<span>${p.polarity === 'deny' ? '¬ ' : ''}${escape(p.claim)}</span>`).join('')}${r.conclusion ? `<span>→ ${r.conclusion.polarity === 'deny' ? '¬ ' : ''}${escape(r.conclusion.claim)}</span>` : ''}</div>
+      <p>${escape(r.explanation)}</p>${policy() ? '<p class="result-warning">Conditional on your assumptions; not independently verified.</p>' : ''}
+      <details><summary>Reasoning, qualifications & sources</summary><p><strong>Caveat:</strong> ${escape(r.caveat)}</p>
+      ${listHTML(policy() ? r.alternatives : r.objections, 'Possible revisions')}
+      ${policy() ? listHTML(r.evidenceNeeded, 'Evidence required') + `<p><strong>Source role:</strong> ${escape(r.sourceRole)}</p>` + Object.entries(r.context).map(([k,v]) => `<p><strong>${escape(CONTEXT[k])}:</strong> ${escape(v)}</p>`).join('') : ''}
+      ${sourcesHTML(r.sources)}</details></article>`;
+  }).join('');
+}
+function listHTML(items, title) { return items?.length ? `<p><strong>${escape(title)}:</strong></p><ul>${items.map(v => `<li>${escape(v)}</li>`).join('')}</ul>` : ''; }
+function render() { filters(); claimsView(); resultsView(); }
+function contextView() {
+  $('#context-fields').innerHTML = Object.entries(CONTEXT).map(([key,label]) => `<label for="context-${key}">${escape(label)}<input id="context-${key}" data-context="${key}" maxlength="300" value="${escape(state().context[key] || '')}" autocomplete="off"></label>`).join('');
+  $('#scope-confirmed').checked = state().scopeConfirmed;
+  $('#example-notice').textContent = state().example ? `Based on a synthetic example: ${state().example}. Your edits are hypothetical and unverified.` : 'Your own scenario. No party positions or project facts are verified here.';
+}
+function areaView() {
+  $('#area-select').value = area;
+  $('#area-description').textContent = policy() ? 'Explore Norwegian policy choices and scenario assumptions. Research prototype · Bokmål dataset.' : 'Explore divine attributes, freedom, foreknowledge and providence.';
+  $('#hero-title').innerHTML = policy() ? 'How do your policies<br><em>fit together?</em>' : 'What else follows from<br><em>what you believe?</em>';
+  $('#hero-lede').textContent = policy() ? 'Choose policies and assumptions, define a shared scenario, and inspect conditional relationships. Examples are illustrative—not party assessments.' : 'Choose your commitments. Trace consequences, points of pressure and disputed assumptions.';
+  $('#template-button').textContent = policy() ? 'Start from an example' : 'Start from a position';
+  $('#template-title').textContent = policy() ? 'Illustrative policy scenarios' : 'Position templates';
+  $('#template-description').textContent = policy() ? 'Synthetic examples, not party platforms. Loading one replaces this area’s selections and context; every item remains editable.' : 'Loading a template replaces this area’s selections. Templates are editable sketches, not definitions.';
+  $('#template-list').innerHTML = dataset().templates.map(p => `<button class="template" data-template="${p.id}"><strong>${escape(p.title || p.label)}</strong><span>${escape(p.description || p.lesson)}</span></button>`).join('');
+  $('#policy-context').hidden = !policy(); $('#policy-notice').hidden = !policy();
+  $('#consequence-label').textContent = policy() ? 'need context' : 'consequences';
+  $('#tension-label').textContent = policy() ? 'conditional findings' : 'tensions / conflicts';
+  $('#search').value = state().search;
+  $('#method-content').innerHTML = policy()
+    ? '<h1>Assumptions stay visible.</h1><p class="method-intro">The Norwegian corpus checks policy packages only under the assumptions and boundaries you supply. It neither verifies those assumptions nor rates parties.</p><div class="method-grid"><article><h2>Three kinds of statement</h2><p>Policy choices, self-imposed constraints and scenario assumptions are separate. Undecided never means rejected.</p></article><article><h2>One shared scenario</h2><p>Use the same actor, period, baseline and relevant project boundaries. Missing context prompts clarification rather than a finding.</p></article><article><h2>Conditional results</h2><p>Accounting conflicts, unsupported inferences and implementation pressures have different meanings. An unsupported inference does not prove its conclusion false.</p></article></div><div class="method-note"><p>No warnings does not establish coherence. No empirical or legal review is performed. Sources explain the framework, and evidence requirements remain visible with each result.</p><p><a href="data/norway/AUDIT.md">Read the editorial audit</a> · <a href="data/norway/README.md">Dataset documentation</a></p></div>'
+    : '<h1>Pressure is not contradiction.</h1><p class="method-intro">Formal and conceptual consequences remain separate from contested philosophical arguments. The analysis checks the explicit selections against documented rules; it does not perform general theorem proving.</p><div class="method-grid"><article><h2>Claims are atomic</h2><p>Position templates are starting points. The analysis uses your individual selections.</p></article><article><h2>Strength is visible</h2><p>Deductive relations and contested tensions are labeled separately. Conclusions are displayed without silently changing your beliefs.</p></article><article><h2>Assumptions stay exposed</h2><p>All premises must be explicitly selected. Objections, qualifications and sources remain attached.</p></article></div><div class="method-note"><p>No warnings does not establish consistency: coverage is limited to the documented rules.</p></div>';
+  contextView(); render();
+}
+function clearSharedAddress() { history.replaceState(null, '', location.pathname); }
+function markEdited() { clearSharedAddress(); $('#share-output').hidden = true; }
+function restoreFocus(selector) { $(selector)?.focus({preventScroll:true}); }
+async function init() {
+  await Promise.allSettled(Object.keys(AREAS).map(async id => { datasets[id] = await loadArea(id); }));
+  if (!Object.keys(datasets).length) throw new Error('The datasets could not be loaded. Please reload to retry.');
+  const restored = restoreURL(location.href, datasets); area = restored.area; sessions[area] = restored.state;
+  if (restored.error) toast(restored.error);
+  clearSharedAddress();
+  $('#area-select').disabled = false; $('#begin-button').disabled = false; $('#template-button').disabled = false; $('#share-button').disabled = false;
+  $('#area-select').onchange = async e => {
+    const next = e.target.value; $('#area-select').disabled = true;
+    try { if (!datasets[next]) datasets[next] = await loadArea(next); area = next; markEdited(); areaView(); }
+    catch (error) { $('#area-select').value = area; toast(error.message); }
+    finally { $('#area-select').disabled = false; }
+  };
+  document.addEventListener('click', e => {
+    const choice = e.target.closest('.choice');
+    if (choice) {
+      const {id,value} = choice.dataset;
+      if (value === 'undecided') delete state().selections[id]; else state().selections[id] = value;
+      if (policy()) { state().scopeConfirmed = false; $('#scope-confirmed').checked = false; }
+      markEdited(); render(); restoreFocus(`.choice[data-id="${id}"][data-value="${value}"]`);
+    }
+    const filter = e.target.closest('.filter');
+    if (filter) { state().category = filter.dataset.category; render(); [...document.querySelectorAll('.filter')].find(x => x.dataset.category === state().category)?.focus({preventScroll:true}); }
+    const expand = e.target.closest('[data-expand]');
+    if (expand) { const id = expand.dataset.expand; state().expanded.has(id) ? state().expanded.delete(id) : state().expanded.add(id); claimsView(); restoreFocus(`[data-expand="${id}"]`); }
+    const template = e.target.closest('[data-template]');
+    if (template) {
+      const p = dataset().templates.find(x => x.id === template.dataset.template);
+      sessions[area] = newState(); state().selections = Object.fromEntries(Object.entries(p.selections).filter(([,v]) => v === 'affirm' || v === 'deny'));
+      state().context = {...p.context}; state().example = policy() ? p.label : '';
+      $('#template-dialog').close(); markEdited(); areaView(); $('#workspace').scrollIntoView();
+    }
   });
+  $('#search').oninput = e => { state().search = e.target.value; claimsView(); };
+  $('#clear-button').onclick = () => { sessions[area] = newState(); markEdited(); areaView(); toast('Cleared this area’s selections and context.'); };
+  $('#begin-button').onclick = () => $('#workspace').scrollIntoView();
+  $('#template-button').onclick = () => $('#template-dialog').showModal();
+  $('.dialog-close').onclick = () => $('#template-dialog').close();
+  $('#expand-all').onclick = () => { state().expanded = state().expanded.size === dataset().claims.length ? new Set() : new Set(dataset().claims.map(c => c.id)); claimsView(); };
+  $('#context-fields').oninput = e => {
+    if (!e.target.dataset.context) return;
+    state().context[e.target.dataset.context] = e.target.value;
+    state().scopeConfirmed = false; $('#scope-confirmed').checked = false; markEdited(); resultsView();
+  };
+  $('#scope-confirmed').onchange = e => { state().scopeConfirmed = e.target.checked; markEdited(); resultsView(); };
+  $('#share-button').onclick = async () => {
+    const url = shareURL(location.href, area, state());
+    $('#share-link').value = url; $('#share-output').hidden = false;
+    try { await navigator.clipboard.writeText(url); toast('Link copied. It includes this area’s selections and context.'); }
+    catch { $('#share-link').focus(); $('#share-link').select(); toast('Copy the displayed link manually.'); }
+  };
+  document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => {
+    const method = b.dataset.view === 'method';
+    $('#explore-view').classList.toggle('hidden', method); $('#method-view').classList.toggle('hidden', !method);
+    document.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('active', x === b)); window.scrollTo(0,0);
+  });
+  areaView();
 }
-function renderFilters(){ const counts=Object.fromEntries(claims.map(c=>c.category).map(k=>[k,claims.filter(c=>c.category===k).length])); const cats=['All',...Object.keys(counts)]; document.querySelector('#category-filters').innerHTML=cats.map(c=>`<button class="filter ${state.category===c?'active':''}" data-category="${c}">${c}<span>${c==='All'?claims.length:counts[c]}</span></button>`).join(''); }
-function renderClaims(){
-  const visible=claims.filter(c=>(state.category==='All'||c.category===state.category)&&(`${c.title} ${c.statement} ${c.tags.join(' ')}`.toLowerCase().includes(state.search.toLowerCase())));
-  document.querySelector('#claim-count').textContent=`Showing ${visible.length} of ${claims.length} commitments`;
-  document.querySelector('#claims-list').innerHTML=visible.map(c=>`<article class="claim-card ${state.expanded.has(c.id)?'expanded':''}">
-    <div class="claim-top"><div><div class="claim-category">${c.category} · ${c.id}</div><h3>${c.title}</h3><p class="statement">${c.statement}</p></div>
-    <div class="choice-group" role="group" aria-label="Your view on ${c.title}"><button class="choice affirm ${state.selections[c.id]==='affirm'?'active':''}" data-id="${c.id}" data-value="affirm">Affirm</button><button class="choice deny ${state.selections[c.id]==='deny'?'active':''}" data-id="${c.id}" data-value="deny">Deny</button></div></div>
-    <button class="detail-toggle" data-expand="${c.id}">${state.expanded.has(c.id)?'− Hide note':'+ Why this wording?'}</button>
-    <div class="claim-detail"><p>${c.description}</p>${sourceLinks(c.sources)}</div>
-  </article>`).join('') || '<div class="empty-state"><h3>No matching claims</h3><p>Try another search or category.</p></div>';
-}
-function sourceLinks(ids){ return `<p>Sources: ${ids.map(id=>{const s=sourceMap[id];return `<a href="${s.url}" target="_blank" rel="noreferrer">${s.title} ↗</a>`}).join(' · ')}</p>`; }
-function renderAnalysis(){
-  const items=analyses(), selected=Object.keys(state.selections).length, tensions=items.filter(x=>x.resultType==='conflict').length, consequences=items.filter(x=>x.resultType==='consequence').length;
-  document.querySelector('#selection-count').textContent=selected; document.querySelector('#tension-count').textContent=tensions; document.querySelector('#consequence-count').textContent=consequences;
-  document.querySelector('#score-ring').style.background=`conic-gradient(var(--sage) ${selected/claims.length*360}deg, #304139 0deg)`;
-  const box=document.querySelector('#analysis-results');
-  if(!items.length){ box.innerHTML=`<div class="empty-state"><span>◇</span><h3>${selected?'No active relations yet.':'A clearer map begins here.'}</h3><p>${selected?'Add more commitments to expose their connections.':'Make a few selections to reveal their connections.'}</p></div>`; return; }
-  box.innerHTML=items.map(r=>`<article class="result-card ${r.resultType}"><div class="result-label">${r.resultType==='consequence'?'Consequence':r.kind} · ${r.status}</div><h3>${r.title}</h3><div class="premises">${r.premises.map(p=>`<span>${p.claim}</span>`).join('')} ${r.conclusion?`<span>→ ${r.conclusion.polarity==='deny'?'¬':''}${r.conclusion.claim}</span>`:''}</div><p>${r.explanation}</p><details><summary>Assumptions, objections & sources</summary><p><strong>Caveat:</strong> ${r.caveat}</p>${r.objections.length?`<p><strong>Ways to resist:</strong> ${r.objections.join(' · ')}</p>`:''}${sourceLinks(r.sources)}</details></article>`).join('');
-}
-function render(){ renderFilters();renderClaims();renderAnalysis();encodeState(); }
-document.addEventListener('click',e=>{
-  const choice=e.target.closest('.choice'); if(choice){ const {id,value}=choice.dataset; state.selections[id]=state.selections[id]===value?undefined:value; if(!state.selections[id])delete state.selections[id];render(); }
-  const filter=e.target.closest('.filter'); if(filter){state.category=filter.dataset.category;render();}
-  const exp=e.target.closest('[data-expand]'); if(exp){state.expanded.has(exp.dataset.expand)?state.expanded.delete(exp.dataset.expand):state.expanded.add(exp.dataset.expand);renderClaims();}
-  const template=e.target.closest('.template'); if(template){state.selections={...positions.find(p=>p.id===template.dataset.id).selections};document.querySelector('#template-dialog').close();render();document.querySelector('#workspace').scrollIntoView();}
-});
-document.querySelector('#search').addEventListener('input',e=>{state.search=e.target.value;renderClaims();});
-document.querySelector('#clear-button').onclick=()=>{state.selections={};render();};
-document.querySelector('#begin-button').onclick=()=>document.querySelector('#workspace').scrollIntoView();
-const dialog=document.querySelector('#template-dialog'); document.querySelector('#template-button').onclick=()=>dialog.showModal(); document.querySelector('.dialog-close').onclick=()=>dialog.close();
-document.querySelector('#template-list').innerHTML=positions.map(p=>`<button class="template" data-id="${p.id}"><strong>${p.title}</strong><span>${p.description}</span></button>`).join('');
-document.querySelector('#expand-all').onclick=()=>{const all=state.expanded.size===claims.length;state.expanded=all?new Set():new Set(claims.map(c=>c.id));document.querySelector('#expand-all').textContent=all?'Expand all':'Collapse all';renderClaims();};
-document.querySelector('#share-button').onclick=async()=>{encodeState();await navigator.clipboard.writeText(location.href);const t=document.querySelector('#toast');t.textContent='Link copied to clipboard';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);};
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{const method=b.dataset.view==='method';document.querySelector('#explore-view').classList.toggle('hidden',method);document.querySelector('#method-view').classList.toggle('hidden',!method);document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));scrollTo(0,0);});
-decodeState();render();
+init().catch(error => { $('#claim-count').textContent = error.message; $('#analysis-results').textContent = 'Analysis unavailable until the data loads.'; });
