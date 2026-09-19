@@ -1,0 +1,18 @@
+{
+ "id":"norwegian-policy-coherence",
+ "version":"0.1.0",
+ "language":"nb-NO",
+ "created":"2026-09-19",
+ "status":"research-prototype",
+ "jurisdiction":"Norway",
+ "scope":"Energy, emissions accounting, conditional fiscal financing, municipal funding and delivery scenarios",
+ "claimsAre":"Editorial policy formulations and user-supplied scenario assumptions, not attributed party positions or verified project facts",
+ "partyAttributions":[],
+ "sourceReview":"Relevant passages read; no independent expert review or archived source snapshots",
+ "reviewDue":"2026-12-19",
+ "reviewTriggers":["Updated budget framework","Changed emissions accounting guidance","Changed source passage","New project or party attribution"],
+ "defaults":{"selection":"undecided","deriveBeliefs":false,"overallScore":false},
+ "requiredContext":["actor","period","baseline"],
+ "deferred":["Current statutory climate-target parameters","EEA and procurement legality","Sami rights and consultation","Party programme and vote attribution","Empirical project costs and emissions","Price and macroeconomic forecasting"],
+ "privacy":"No political profiles, tracking or automatic sharing; future sharing must be explicit."
+}
