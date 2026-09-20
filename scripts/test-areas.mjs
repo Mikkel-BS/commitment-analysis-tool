@@ -77,5 +77,5 @@ test('philosophy tension never turns into a deduction', () => {
   const state=newState();
   for(const id of ['FOREKNOWLEDGE','PAST-FIXITY','TRANSFER-N','PAP','LIBERTARIAN']) state.selections[id]='affirm';
   const result=analyze('philosophy',philosophyRules,state).find(r=>r.id==='R-FATALISM');
-  assert.equal(result.kind,'tension'); assert.equal(result.resultType,'conflict'); assert.equal(result.conclusion,undefined);
+  assert.equal(result.kind,'tension'); assert.equal(result.resultType,'tension'); assert.equal(result.conclusion,undefined);
 });

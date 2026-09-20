@@ -22,9 +22,14 @@ export function analyze(area, rules, state) {
     resultType:f.state === 'needs-context' || !state.scopeConfirmed ? 'incomplete' : 'conditional',
     needsScopeConfirmation:!state.scopeConfirmed
   }));
-  return rules.filter(r => r.premises.every(p => state.selections[p.claim] === p.polarity)).map(r => {
+  return rules.flatMap(r => {
+    const missingPremises = r.premises.filter(p => state.selections[p.claim] !== p.polarity);
+    if (missingPremises.length) {
+      const relevant = r.showIncomplete && [...r.premises, ...(r.conclusion ? [r.conclusion] : [])].some(p => state.selections[p.claim]);
+      return relevant ? [{...r, resultType:'incomplete', missingPremises}] : [];
+    }
     const contradicted = Boolean(r.conclusion && state.selections[r.conclusion.claim] && state.selections[r.conclusion.claim] !== r.conclusion.polarity);
-    return {...r,resultType:r.conclusion && !contradicted ? 'consequence':'conflict',contradicted};
+    return [{...r,resultType:r.strength === 'dialectical' ? 'tension' : r.conclusion && !contradicted ? 'consequence':'conflict',contradicted}];
   });
 }
 // Fragments are not sent to the host; only explicit Share creates one.

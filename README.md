@@ -31,6 +31,18 @@ Open `http://localhost:4173`. No build step or runtime dependencies are required
 
 Only `deductive` rules may derive conclusions. `dialectical` rules can surface a tension but never silently add or negate a commitment. Run `npm test` after any data edit; the validator checks referential integrity and guards that separation.
 
+## Philosophy audit and hiddenness example
+
+The philosophy corpus contains 25 claims, 11 rules, and 8 editable templates. [The editorial audit](data/AUDIT.md) documents each original rule and its limitations. `assessment` separates inferential validity from disputed premises, states scope and framework, and records the review level. Rule-level `citations` identify source roles and section/topic locators. This is an editorial audit, not independent specialist approval.
+
+Middle knowledge no longer entails actual free actions. The creative-freedom deduction requires an explicit bridge to a different total created order. The simplicity objection requires necessary existence and remains dialectical. The divine-determination rule is now interpretive pressure because the connection to prior-condition determination needs clarification.
+
+Two hiddenness templates demonstrate an incomplete argument and a conditional deduction. The reconstruction uses G → ¬N and N to conclude ¬G, where G denotes only the specified perfectly loving personal God. Both premises remain disputed. Missing or opposed premises block the deduction; their rejection does not prove God exists. No individual’s resistance or motives are diagnosed.
+
+The validator enforces the keywords used in the claim/rule JSON Schema and rejects unsupported keywords. Tests cover every rule’s triggering and omitted/opposed-premise cases, the hiddenness truth table, and all 27 hiddenness selection states. Structural and logical checks do not verify premise truth or interpretive fidelity.
+
+Analysis still matches explicit selections directly; displayed consequences do not trigger additional rules. It is not a global consistency check. Incomplete-argument guidance is presently available only for hiddenness. Shared links use current data rather than pinning a historical corpus version.
+
 ## GitHub Pages
 
 The included workflow publishes the repository root on pushes to `main`. In repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions** once if needed.

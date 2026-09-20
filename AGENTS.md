@@ -34,7 +34,8 @@ Commitment Atlas is a static, client-side tool with selectable philosophy-of-rel
 - Distinguish deductive consequences from dialectical pressure:
   - A `deductive` rule may derive a conclusion.
   - A `dialectical` rule may surface a tension but must not derive or negate a commitment.
-  - Contested or interpretation-dependent rules must not be marked deductive.
+  - Disputed premises may appear in a valid conditional deduction. Record premise acceptability separately from inferential validity in `assessment`.
+  - An unestablished inference must not be marked deductive. Formal checks do not establish soundness or interpretive fidelity.
 - Use `formal` only for relations whose validity follows from logical form under the encoded definitions.
 - Use `conceptual` when the result depends on the dataset's explicit definitions.
 - Make load-bearing premises visible. Include a caveat, recognized objections, and appropriate sources for every substantive rule.

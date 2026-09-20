@@ -1,12 +1,573 @@
 [
-  {"id":"R-FUTURE-KNOWLEDGE","title":"Foreknowledge presupposes settled future truth","premises":[{"claim":"FOREKNOWLEDGE","polarity":"affirm"}],"conclusion":{"claim":"FUTURE-TRUTH","polarity":"affirm"},"kind":"entails","status":"conceptual","strength":"deductive","explanation":"On the stipulated definitions, infallible prior knowledge that a future action will occur requires that the corresponding proposition be true prior to the act.","caveat":"A temporalist may revise the account of ‘prior’; an atemporalist may replace foreknowledge with timeless knowledge.","objections":["Reject the temporal formulation of divine knowledge.","Argue that knowledge can track a future truth without its being presently truth-valued."],"sources":["SEP-FWF","SEP-FUTURE"]},
-  {"id":"R-OPEN-BIVALENCE","title":"Open and settled future","premises":[{"claim":"OPEN-FUTURE","polarity":"affirm"},{"claim":"FUTURE-TRUTH","polarity":"affirm"}],"kind":"incompatible","status":"formal","strength":"deductive","explanation":"The two claims explicitly quantify over the same class of future free-action propositions and respectively deny and affirm universal present bivalence.","caveat":"The conflict disappears if the claims concern different propositions, times, or senses of determinacy.","objections":[],"sources":["SEP-FUTURE"]},
-  {"id":"R-TIME-MODELS","title":"Timelessness and temporal succession","premises":[{"claim":"TIMELESS","polarity":"affirm"},{"claim":"TEMPORAL","polarity":"affirm"}],"kind":"incompatible","status":"conceptual","strength":"deductive","explanation":"Under the definitions used here, one claim denies and the other affirms that God undergoes temporal succession.","caveat":"Hybrid views may distinguish phases or senses of temporality; they should not affirm both claims without qualification.","objections":["Adopt timelessness sans creation and temporality with creation.","Distinguish metaphysical time from another ordering relation."],"sources":["SEP-ETERNITY"]},
-  {"id":"R-LIBERTARIAN-DETERMINISM","title":"Libertarian freedom and determination","premises":[{"claim":"LIBERTARIAN","polarity":"affirm"},{"claim":"DETERMINES-ACTIONS","polarity":"affirm"}],"kind":"incompatible","status":"conceptual","strength":"deductive","explanation":"Libertarian freedom was defined as incompatible with causal determination by prior conditions, while theological determination says every human action is so determined.","caveat":"A compatibilist can retain freedom but not freedom in the stipulated libertarian sense.","objections":["Restrict divine determination so that some actions remain undetermined.","Adopt a compatibilist analysis of freedom."],"sources":["SEP-FREE","SEP-PROVIDENCE"]},
-  {"id":"R-FATALISM","title":"Theological fatalist argument","premises":[{"claim":"FOREKNOWLEDGE","polarity":"affirm"},{"claim":"PAST-FIXITY","polarity":"affirm"},{"claim":"TRANSFER-N","polarity":"affirm"},{"claim":"PAP","polarity":"affirm"},{"claim":"LIBERTARIAN","polarity":"affirm"}],"target":{"claim":"LIBERTARIAN","polarity":"affirm"},"kind":"tension","status":"contested","strength":"dialectical","explanation":"If God’s past belief is fixed and infallibly entails the later act, transfer of accidental necessity appears to make the act unavoidable; PAP then places pressure on libertarian freedom.","caveat":"This is not encoded as a deduction. Ockhamists dispute that the relevant past belief is a hard fact; others reject transfer, PAP, or the temporal framing.","objections":["Treat the past belief as a soft fact partly about the future.","Reject the relevant transfer principle.","Ground freedom in sourcehood rather than alternative possibilities.","Adopt timeless rather than prior divine knowledge."],"sources":["SEP-FWF"]},
-  {"id":"R-TIMELESS-FOREKNOWLEDGE","title":"Timeless knowledge described as prior","premises":[{"claim":"TIMELESS","polarity":"affirm"},{"claim":"FOREKNOWLEDGE","polarity":"affirm"}],"target":{"claim":"FOREKNOWLEDGE","polarity":"affirm"},"kind":"tension","status":"interpretation-dependent","strength":"dialectical","explanation":"The definition of foreknowledge used here locates divine knowledge prior to events, while timelessness denies temporal location. A timeless knower may know future-to-us events, but not literally beforehand.","caveat":"This is largely terminological if ‘foreknowledge’ is used loosely for knowledge of what creatures call the future.","objections":["Replace FOREKNOWLEDGE with an atemporal knowledge claim.","Use ‘future’ relationally to creaturely time without temporally locating God."],"sources":["SEP-ETERNITY","SEP-FWF"]},
-  {"id":"R-IMMUTABLE-TEMPORAL","title":"Succession and intrinsic changelessness","premises":[{"claim":"TEMPORAL","polarity":"affirm"},{"claim":"IMMUTABLE","polarity":"affirm"}],"target":{"claim":"IMMUTABLE","polarity":"affirm"},"kind":"tension","status":"interpretation-dependent","strength":"dialectical","explanation":"Temporally ordered divine states appear to involve intrinsic change, while strong immutability denies it.","caveat":"Mere temporal endurance need not entail intrinsic change; the pressure concerns the stronger claim that God has successively different intrinsic states.","objections":["Hold that only God’s extrinsic relations change.","Distinguish temporal location from qualitative change."],"sources":["SEP-ETERNITY","SEP-IMMUT"]},
-  {"id":"R-DIVINE-FREEDOM-ALT","title":"Creative freedom’s alternatives","premises":[{"claim":"DIVINE-FREEDOM","polarity":"affirm"},{"claim":"DIVINE-PAP","polarity":"affirm"}],"conclusion":{"claim":"CONTINGENT-CREATION","polarity":"affirm"},"kind":"entails","status":"conceptual","strength":"deductive","explanation":"If God’s actual creative choice is free and such freedom requires an alternative, then a relevant alternative to this total creative choice must be possible.","caveat":"This conclusion uses the broad alternative encoded in CONTINGENT-CREATION; finer-grained alternatives may require a more specific claim.","objections":["Reject alternative possibilities as necessary for divine freedom.","Argue that only alternatives within creation, not non-creation of this total order, are required."],"sources":["SEP-GOOD"]},
-  {"id":"R-SIMPLICITY-CREATION","title":"Simplicity and contingent effects","premises":[{"claim":"SIMPLE","polarity":"affirm"},{"claim":"CONTINGENT-CREATION","polarity":"affirm"}],"target":{"claim":"CONTINGENT-CREATION","polarity":"affirm"},"kind":"tension","status":"contested","strength":"dialectical","explanation":"Critics argue that if God’s willing is identical with God’s necessary, simple being, it is difficult to explain how that willing has a contingent total effect rather than a necessary one.","caveat":"This is a modal-collapse objection, not a formal consequence of simplicity alone. Classical replies distinguish necessary divine willing from contingent relations or effects.","objections":["Distinguish God’s intrinsic act from its contingent extrinsic terminus.","Deny that a necessary cause must have its effect necessarily.","Use an account of Cambridge properties or contingent relations."],"sources":["SEP-SIMPLE"]},
-  {"id":"R-MIDDLE-LIBERTARIAN","title":"Middle knowledge’s libertarian subject matter","premises":[{"claim":"MIDDLE-KNOWLEDGE","polarity":"affirm"}],"conclusion":{"claim":"LIBERTARIAN","polarity":"affirm"},"kind":"entails","status":"conceptual","strength":"deductive","explanation":"The stipulated middle-knowledge claim explicitly concerns counterfactuals of libertarian creaturely freedom.","caveat":"Broader uses of ‘middle knowledge’ may concern counterfactuals without libertarian freedom; this dataset uses the Molinist sense.","objections":[],"sources":["SEP-PROVIDENCE"]}
+  {
+    "id": "R-FUTURE-KNOWLEDGE",
+    "title": "Foreknowledge presupposes settled future truth",
+    "premises": [
+      {
+        "claim": "FOREKNOWLEDGE",
+        "polarity": "affirm"
+      }
+    ],
+    "conclusion": {
+      "claim": "FUTURE-TRUTH",
+      "polarity": "affirm"
+    },
+    "kind": "entails",
+    "status": "conceptual",
+    "strength": "deductive",
+    "explanation": "On the stipulated definitions, infallible prior knowledge that a future action will occur requires that the corresponding proposition be true prior to the act.",
+    "caveat": "A temporalist may revise the account of ‘prior’; an atemporalist may replace foreknowledge with timeless knowledge.",
+    "objections": [
+      "Reject the temporal formulation of divine knowledge.",
+      "Argue that knowledge can track a future truth without its being presently truth-valued."
+    ],
+    "sources": [
+      "SEP-FWF",
+      "SEP-FUTURE"
+    ],
+    "assessment": {
+      "inference": "definition-relative",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Retained only under the temporal, factive reading of foreknowledge and the same domain of future free-action propositions. Present truth is not causal necessity.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-FWF",
+        "locator": "Argument for theological fatalism and compatibilist responses",
+        "role": "background-and-objections"
+      },
+      {
+        "source": "SEP-FUTURE",
+        "locator": "Discussion of bivalence and future truth",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-OPEN-BIVALENCE",
+    "title": "Open and settled future",
+    "premises": [
+      {
+        "claim": "OPEN-FUTURE",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "FUTURE-TRUTH",
+        "polarity": "affirm"
+      }
+    ],
+    "kind": "incompatible",
+    "status": "formal",
+    "strength": "deductive",
+    "explanation": "The two claims explicitly quantify over the same class of future free-action propositions and respectively deny and affirm universal present bivalence.",
+    "caveat": "The conflict disappears if the claims concern different propositions, times, or senses of determinacy.",
+    "objections": [],
+    "sources": [
+      "SEP-FUTURE"
+    ],
+    "assessment": {
+      "inference": "definition-relative",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Universal bivalence and its existential denial concern the same propositions and prior assessment time. No general theorem about future semantics is asserted.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-FUTURE",
+        "locator": "Discussion of bivalence and future truth",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-TIME-MODELS",
+    "title": "Timelessness and temporal succession",
+    "premises": [
+      {
+        "claim": "TIMELESS",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "TEMPORAL",
+        "polarity": "affirm"
+      }
+    ],
+    "kind": "incompatible",
+    "status": "conceptual",
+    "strength": "deductive",
+    "explanation": "Under the definitions used here, one claim denies and the other affirms that God undergoes temporal succession.",
+    "caveat": "Hybrid views may distinguish phases or senses of temporality; they should not affirm both claims without qualification.",
+    "objections": [
+      "Adopt timelessness sans creation and temporality with creation.",
+      "Distinguish metaphysical time from another ordering relation."
+    ],
+    "sources": [
+      "SEP-ETERNITY"
+    ],
+    "assessment": {
+      "inference": "definition-relative",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Conceptual exclusion under the unqualified same-subject definitions. Hybrid phases require different claims and cannot be represented by this pair.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-ETERNITY",
+        "locator": "Discussion of timelessness and temporal eternity",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-LIBERTARIAN-DETERMINISM",
+    "title": "Libertarian freedom and determination",
+    "premises": [
+      {
+        "claim": "LIBERTARIAN",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "DETERMINES-ACTIONS",
+        "polarity": "affirm"
+      }
+    ],
+    "kind": "tension",
+    "status": "interpretation-dependent",
+    "strength": "dialectical",
+    "explanation": "The two claims are incompatible if divine determination is causal determination by the prior conditions excluded by LIBERTARIAN. A timeless decree needs a further account of this relation.",
+    "caveat": "A compatibilist can retain freedom but not freedom in the stipulated libertarian sense.",
+    "objections": [
+      "Restrict divine determination so that some actions remain undetermined.",
+      "Adopt a compatibilist analysis of freedom."
+    ],
+    "sources": [
+      "SEP-FREE",
+      "SEP-PROVIDENCE"
+    ],
+    "target": {
+      "claim": "LIBERTARIAN",
+      "polarity": "affirm"
+    },
+    "assessment": {
+      "inference": "not-established",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Downgraded: prior-condition determination and a possibly timeless decree are not automatically the same relation. The temporal/causal bridge remains unresolved.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-FREE",
+        "locator": "Incompatibilist theories and alternative possibilities",
+        "role": "background-and-objections"
+      },
+      {
+        "source": "SEP-PROVIDENCE",
+        "locator": "Molinism and theological determinism",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-FATALISM",
+    "title": "Theological fatalist argument",
+    "premises": [
+      {
+        "claim": "FOREKNOWLEDGE",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "PAST-FIXITY",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "TRANSFER-N",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "PAP",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "LIBERTARIAN",
+        "polarity": "affirm"
+      }
+    ],
+    "target": {
+      "claim": "LIBERTARIAN",
+      "polarity": "affirm"
+    },
+    "kind": "tension",
+    "status": "contested",
+    "strength": "dialectical",
+    "explanation": "If God’s past belief is fixed and infallibly entails the later act, transfer of accidental necessity appears to make the act unavoidable; PAP then places pressure on libertarian freedom.",
+    "caveat": "This is not encoded as a deduction. Ockhamists dispute that the relevant past belief is a hard fact; others reject transfer, PAP, or the temporal framing.",
+    "objections": [
+      "Treat the past belief as a soft fact partly about the future.",
+      "Reject the relevant transfer principle.",
+      "Ground freedom in sourcehood rather than alternative possibilities.",
+      "Adopt timeless rather than prior divine knowledge."
+    ],
+    "sources": [
+      "SEP-FWF"
+    ],
+    "assessment": {
+      "inference": "not-established",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Retained as a dialectical outline. The general past-fixity sentence does not supply the hard-fact premise or the full necessity-to-inability bridge.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-FWF",
+        "locator": "Argument for theological fatalism and compatibilist responses",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-TIMELESS-FOREKNOWLEDGE",
+    "title": "Timeless knowledge described as prior",
+    "premises": [
+      {
+        "claim": "TIMELESS",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "FOREKNOWLEDGE",
+        "polarity": "affirm"
+      }
+    ],
+    "target": {
+      "claim": "FOREKNOWLEDGE",
+      "polarity": "affirm"
+    },
+    "kind": "tension",
+    "status": "interpretation-dependent",
+    "strength": "dialectical",
+    "explanation": "The definition of foreknowledge used here locates divine knowledge prior to events, while timelessness denies temporal location. A timeless knower may know future-to-us events, but not literally beforehand.",
+    "caveat": "This is largely terminological if ‘foreknowledge’ is used loosely for knowledge of what creatures call the future.",
+    "objections": [
+      "Replace FOREKNOWLEDGE with an atemporal knowledge claim.",
+      "Use ‘future’ relationally to creaturely time without temporally locating God."
+    ],
+    "sources": [
+      "SEP-ETERNITY",
+      "SEP-FWF"
+    ],
+    "assessment": {
+      "inference": "not-established",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Retained as interpretive pressure: a temporal reading conflicts with timelessness, but a relational or loose reading changes the proposition.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-ETERNITY",
+        "locator": "Discussion of timelessness and temporal eternity",
+        "role": "background-and-objections"
+      },
+      {
+        "source": "SEP-FWF",
+        "locator": "Argument for theological fatalism and compatibilist responses",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-IMMUTABLE-TEMPORAL",
+    "title": "Succession and intrinsic changelessness",
+    "premises": [
+      {
+        "claim": "TEMPORAL",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "IMMUTABLE",
+        "polarity": "affirm"
+      }
+    ],
+    "target": {
+      "claim": "IMMUTABLE",
+      "polarity": "affirm"
+    },
+    "kind": "tension",
+    "status": "interpretation-dependent",
+    "strength": "dialectical",
+    "explanation": "Temporally ordered divine states appear to involve intrinsic change, while strong immutability denies it.",
+    "caveat": "Mere temporal endurance need not entail intrinsic change; the pressure concerns the stronger claim that God has successively different intrinsic states.",
+    "objections": [
+      "Hold that only God’s extrinsic relations change.",
+      "Distinguish temporal location from qualitative change."
+    ],
+    "sources": [
+      "SEP-ETERNITY",
+      "SEP-IMMUT"
+    ],
+    "assessment": {
+      "inference": "not-established",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Retained as interpretive pressure. Temporally ordered states do not alone establish intrinsically different states.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-ETERNITY",
+        "locator": "Discussion of timelessness and temporal eternity",
+        "role": "background-and-objections"
+      },
+      {
+        "source": "SEP-IMMUT",
+        "locator": "Intrinsic and extrinsic change",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-DIVINE-FREEDOM-ALT",
+    "title": "Creative freedom’s alternatives",
+    "premises": [
+      {
+        "claim": "DIVINE-FREEDOM",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "DIVINE-PAP",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "CREATION-ALTERNATIVE",
+        "polarity": "affirm"
+      }
+    ],
+    "conclusion": {
+      "claim": "CONTINGENT-CREATION",
+      "polarity": "affirm"
+    },
+    "kind": "entails",
+    "status": "conceptual",
+    "strength": "deductive",
+    "explanation": "If God’s actual creative choice is free and such freedom requires an alternative, then a relevant alternative to this total creative choice must be possible.",
+    "caveat": "This conclusion uses the broad alternative encoded in CONTINGENT-CREATION; finer-grained alternatives may require a more specific claim.",
+    "objections": [
+      "Reject alternative possibilities as necessary for divine freedom.",
+      "Argue that only alternatives within creation, not non-creation of this total order, are required."
+    ],
+    "sources": [
+      "SEP-GOOD"
+    ],
+    "assessment": {
+      "inference": "definition-relative",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Added CREATION-ALTERNATIVE: alternatives in choice must involve omitting or replacing this total created order, not merely different intentions with identical effects.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-GOOD",
+        "locator": "Divine freedom and moral perfection",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-SIMPLICITY-CREATION",
+    "title": "Simplicity and contingent effects",
+    "premises": [
+      {
+        "claim": "SIMPLE",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "CONTINGENT-CREATION",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "NECESSARY-GOD",
+        "polarity": "affirm"
+      }
+    ],
+    "target": {
+      "claim": "CONTINGENT-CREATION",
+      "polarity": "affirm"
+    },
+    "kind": "tension",
+    "status": "contested",
+    "strength": "dialectical",
+    "explanation": "Critics argue that if God’s willing is identical with God’s necessary, simple being, it is difficult to explain how that willing has a contingent total effect rather than a necessary one.",
+    "caveat": "This is a modal-collapse objection, not a formal consequence of simplicity alone. Classical replies distinguish necessary divine willing from contingent relations or effects.",
+    "objections": [
+      "Distinguish God’s intrinsic act from its contingent extrinsic terminus.",
+      "Deny that a necessary cause must have its effect necessarily.",
+      "Use an account of Cambridge properties or contingent relations."
+    ],
+    "sources": [
+      "SEP-SIMPLE"
+    ],
+    "assessment": {
+      "inference": "not-established",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Added necessary existence to the triggering cluster. Identity of willing, necessity of its content, and transfer to effects are still disputed; this remains an objection outline, never a deduction.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-SIMPLE",
+        "locator": "Modal collapse and contingent creation",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-MIDDLE-LIBERTARIAN",
+    "title": "Middle knowledge and possible libertarian agency",
+    "premises": [
+      {
+        "claim": "MIDDLE-KNOWLEDGE",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "POSSIBLE-LIBERTARIAN",
+        "polarity": "deny"
+      }
+    ],
+    "kind": "tension",
+    "status": "interpretation-dependent",
+    "strength": "dialectical",
+    "explanation": "The Molinist reading presupposes possible libertarian creaturely agency. Denying that possibility challenges this reading of middle knowledge; it does not establish that any actual human acts freely.",
+    "caveat": "Knowing conditionals about free choices alone does not establish possible antecedents or actual free actions.",
+    "objections": [
+      "Counterfactuals may have impossible or unactualized antecedents.",
+      "Clarify whether the claim asserts possible free agency or merely knowledge of conditionals."
+    ],
+    "sources": [
+      "SEP-PROVIDENCE"
+    ],
+    "target": {
+      "claim": "POSSIBLE-LIBERTARIAN",
+      "polarity": "deny"
+    },
+    "assessment": {
+      "inference": "not-established",
+      "premises": "disputed",
+      "framework": "Classical reasoning over the stated definitions; no automated modal or temporal proof.",
+      "scope": "Same divine subject, domain and sense of the relevant temporal/modal terms. Hybrid readings require reformulation.",
+      "justification": "Removed the actual-action conclusion. Possible libertarian subject matter is an interpretive assumption of the Molinist reading, not a consequence of knowing arbitrary counterfactuals. Downgraded to an explicit interpretive tension when possibility is denied.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-PROVIDENCE",
+        "locator": "Molinism and theological determinism",
+        "role": "background-and-objections"
+      }
+    ]
+  },
+  {
+    "id": "R-HIDDENNESS",
+    "title": "Nonresistant nonbelief and a perfectly loving God",
+    "premises": [
+      {
+        "claim": "HIDDENNESS-BRIDGE",
+        "polarity": "affirm"
+      },
+      {
+        "claim": "NONRESISTANT-NONBELIEF",
+        "polarity": "affirm"
+      }
+    ],
+    "conclusion": {
+      "claim": "LOVING-GOD",
+      "polarity": "deny"
+    },
+    "kind": "entails",
+    "status": "formal",
+    "strength": "deductive",
+    "explanation": "Write G for LOVING-GOD and N for NONRESISTANT-NONBELIEF. The selected bridge is G → ¬N. Together with N it entails ¬G by modus tollens. The deduction does not establish the truth of either premise.",
+    "caveat": "This is an editorial propositional reconstruction, not the full modal argument. It targets only the specified perfectly loving personal God. Denying or suspending a premise does not establish that God exists.",
+    "objections": [
+      "The bridge may fail if perfect love permits temporary nonbelief for sufficient reasons.",
+      "Whether nonresistant nonbelief occurs, and how capacity and resistance are understood, are disputed.",
+      "Rejecting the target conception changes the subject; it is not a refutation of all religious conceptions."
+    ],
+    "sources": [
+      "SEP-HIDDEN"
+    ],
+    "assessment": {
+      "inference": "truth-table-checked",
+      "premises": "disputed",
+      "framework": "Classical propositional logic; G → ¬N, N ⊢ ¬G.",
+      "scope": "G means the specified perfectly loving personal God; N uses the same finite persons, capacities and times in both premises.",
+      "justification": "All four valuations of G and N are checked against the encoded formula in the test suite. This checks form, not soundness or fidelity to the full modal argument.",
+      "review": "editorial-audit",
+      "reviewedOn": "2026-09-20"
+    },
+    "citations": [
+      {
+        "source": "SEP-HIDDEN",
+        "locator": "§2 argument from nonresistant nonbelief; §§3–4 replies",
+        "role": "editorial-reconstruction-and-objections"
+      }
+    ],
+    "objectionTargets": [
+      {
+        "target": "HIDDENNESS-BRIDGE",
+        "text": "Dispute whether perfect love excludes every relevant episode of nonbelief."
+      },
+      {
+        "target": "NONRESISTANT-NONBELIEF",
+        "text": "Assess the existential premise without assigning motives to individual users."
+      }
+    ],
+    "showIncomplete": true,
+    "formalization": {
+      "atoms": {
+        "G": "LOVING-GOD",
+        "N": "NONRESISTANT-NONBELIEF"
+      },
+      "premises": [
+        [
+          "implies",
+          "G",
+          [
+            "not",
+            "N"
+          ]
+        ],
+        "N"
+      ],
+      "conclusion": [
+        "not",
+        "G"
+      ]
+    }
+  }
 ]

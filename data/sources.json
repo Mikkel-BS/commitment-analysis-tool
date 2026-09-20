@@ -1,13 +1,78 @@
 [
-  {"id":"SEP-OMNI","title":"Omniscience","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/omniscience/"},
-  {"id":"SEP-OMNIP","title":"Omnipotence","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/omnipotence/"},
-  {"id":"SEP-GOOD","title":"Perfect Goodness","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/perfect-goodness/"},
-  {"id":"SEP-ONTO","title":"Ontological Arguments","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/ontological-arguments/"},
-  {"id":"SEP-FUTURE","title":"Future Contingents","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/future-contingents/"},
-  {"id":"SEP-FWF","title":"Foreknowledge and Free Will","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/free-will-foreknowledge/"},
-  {"id":"SEP-FREE","title":"Free Will","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/freewill/"},
-  {"id":"SEP-ETERNITY","title":"Eternity in Christian Thought","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/eternity/"},
-  {"id":"SEP-IMMUT","title":"Immutability","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/immutability/"},
-  {"id":"SEP-SIMPLE","title":"Divine Simplicity","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/divine-simplicity/"},
-  {"id":"SEP-PROVIDENCE","title":"Divine Providence","container":"Stanford Encyclopedia of Philosophy","url":"https://plato.stanford.edu/entries/providence-divine/"}
+  {
+    "id": "SEP-OMNI",
+    "title": "Omniscience",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/omniscience/"
+  },
+  {
+    "id": "SEP-OMNIP",
+    "title": "Omnipotence",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/omnipotence/"
+  },
+  {
+    "id": "SEP-GOOD",
+    "title": "Perfect Goodness",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/perfect-goodness/"
+  },
+  {
+    "id": "SEP-ONTO",
+    "title": "Ontological Arguments",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/ontological-arguments/"
+  },
+  {
+    "id": "SEP-FUTURE",
+    "title": "Future Contingents",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/future-contingents/"
+  },
+  {
+    "id": "SEP-FWF",
+    "title": "Foreknowledge and Free Will",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/free-will-foreknowledge/"
+  },
+  {
+    "id": "SEP-FREE",
+    "title": "Free Will",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/freewill/"
+  },
+  {
+    "id": "SEP-ETERNITY",
+    "title": "Eternity in Christian Thought",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/eternity/"
+  },
+  {
+    "id": "SEP-IMMUT",
+    "title": "Immutability",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/immutability/"
+  },
+  {
+    "id": "SEP-SIMPLE",
+    "title": "Divine Simplicity",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/divine-simplicity/"
+  },
+  {
+    "id": "SEP-PROVIDENCE",
+    "title": "Divine Providence",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/providence-divine/"
+  },
+  {
+    "id": "SEP-HIDDEN",
+    "title": "Hiddenness of God",
+    "container": "Stanford Encyclopedia of Philosophy",
+    "url": "https://plato.stanford.edu/entries/divine-hiddenness/",
+    "revision": "2022-07-08",
+    "accessed": "2026-09-20",
+    "locator": "§2; §§3–4",
+    "sourceRole": "Scholarly overview of Schellenberg’s arguments and responses. Our JSON is an editorial reconstruction, not a quotation or independent expert endorsement."
+  }
 ]

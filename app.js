@@ -25,7 +25,7 @@ function sourcesHTML(ids) {
   return ids.map(id => {
     const s = dataset().sources[id];
     if (!s) return '';
-    return `<p><a href="${escape(s.url)}" target="_blank" rel="noreferrer">${escape(s.title)} ↗</a></p>${s.supports ? `<p>${escape(s.publisher)} · Checked ${escape(s.accessed)}<br>${escape(s.locator)}</p><p><strong>Supports:</strong> ${escape(s.supports)}</p><p><strong>Does not establish:</strong> ${escape(s.doesNotEstablish)}</p>` : ''}`;
+    return `<p><a href="${escape(s.url)}" target="_blank" rel="noreferrer">${escape(s.title)} ↗</a></p>${s.sourceRole ? `<p>${escape(s.sourceRole)} · ${escape(s.locator)} · Accessed ${escape(s.accessed)}</p>` : ''}${s.supports ? `<p>${escape(s.publisher)} · Checked ${escape(s.accessed)}<br>${escape(s.locator)}</p><p><strong>Supports:</strong> ${escape(s.supports)}</p><p><strong>Does not establish:</strong> ${escape(s.doesNotEstablish)}</p>` : ''}`;
   }).join('');
 }
 function filters() {
@@ -56,18 +56,20 @@ function resultsView() {
   $('#score-ring').style.background = `conic-gradient(var(--sage) ${count / dataset().claims.length * 360}deg, #304139 0deg)`;
   $('#consequence-count').textContent = items.filter(r => r.resultType === (policy() ? 'incomplete' : 'consequence')).length;
   $('#tension-count').textContent = items.filter(r => r.resultType === (policy() ? 'conditional' : 'conflict')).length;
-  $('#analysis-status').textContent = policy() ? `${items.filter(r => r.resultType === 'conditional').length} conditional findings; ${items.filter(r => r.resultType === 'incomplete').length} need context.` : `${items.length} active relations.`;
+  $('#analysis-status').textContent = policy() ? `${items.filter(r => r.resultType === 'conditional').length} conditional findings; ${items.filter(r => r.resultType === 'incomplete').length} need context.` : `${items.filter(r=>r.resultType==='tension').length} interpretive tensions; ${items.filter(r=>r.resultType==='incomplete').length} incomplete arguments. Direct selected-premise matching only; consequences are not fed into further rules.`;
   if (!items.length) {
     $('#analysis-results').innerHTML = `<div class="empty-state"><span>◇</span><h3>${count ? 'No active relations.' : 'A clearer map begins here.'}</h3><p>${count ? 'No warning does not establish coherence. Only the documented rules are checked.' : 'Select statements or load an editable example.'}</p></div>`;
     return;
   }
   $('#analysis-results').innerHTML = items.map(r => {
-    const label = policy() ? (r.resultType === 'incomplete' ? 'Needs context / Mangler avgrensning' : KINDS[r.kind]) : (r.contradicted ? 'Conflict with your selection' : r.resultType === 'consequence' ? 'Consequence' : r.kind);
+    const label = policy() ? (r.resultType === 'incomplete' ? 'Needs context / Mangler avgrensning' : KINDS[r.kind]) : ({incomplete:'Incomplete argument — no conclusion drawn',tension:'Interpretive tension — not a contradiction',consequence:'Conditional consequence',conflict:'Incompatibility under the stated definitions'})[r.resultType];
     return `<article class="result-card ${r.resultType}" data-rule="${r.id}"><div class="result-label">${escape(label)} · ${escape(r.status)}</div><h3>${escape(r.title)}</h3>
       ${policy() && r.resultType === 'incomplete' ? `<p>Complete: ${escape([...r.missingContext.map(k => CONTEXT[k]), ...(r.needsScopeConfirmation ? ['confirm a common scope below'] : [])].join('; '))}. This is not yet a finding.</p><a href="#policy-context">Edit scenario context ↓</a>` : ''}
-      <div class="premises">${r.premises.map(p => `<span>${p.polarity === 'deny' ? '¬ ' : ''}${escape(p.claim)}</span>`).join('')}${r.conclusion ? `<span>→ ${r.conclusion.polarity === 'deny' ? '¬ ' : ''}${escape(r.conclusion.claim)}</span>` : ''}</div>
+      ${!policy() && r.missingPremises ? `<p><strong>Additional premises required:</strong> ${r.missingPremises.map(p=>`${escape(p.claim)} (${s.selections[p.claim] ? 'currently opposed' : 'undecided'})`).join('; ')}. Nothing is selected automatically. Rejecting a premise does not prove the opposite conclusion.</p>` : ''}
+      <div class="premises">${r.premises.map(p => `<span>${p.polarity === 'deny' ? '¬ ' : ''}${escape(p.claim)}</span>`).join('')}${r.conclusion && r.resultType !== 'incomplete' ? `<span>→ ${r.conclusion.polarity === 'deny' ? '¬ ' : ''}${escape(r.conclusion.claim)}</span>` : ''}</div>
       <p>${escape(r.explanation)}</p>${policy() ? '<p class="result-warning">Conditional on your assumptions; not independently verified.</p>' : ''}
       <details><summary>Reasoning, qualifications & sources</summary><p><strong>Caveat:</strong> ${escape(r.caveat)}</p>
+      ${!policy() && r.assessment ? `<p><strong>Inference:</strong> ${escape(r.assessment.inference)}. <strong>Premises:</strong> ${escape(r.assessment.premises)}.</p><p>${escape(r.assessment.framework)}</p><p><strong>Scope:</strong> ${escape(r.assessment.scope)}</p><p><strong>Audit:</strong> ${escape(r.assessment.justification)}</p><p>Editorial audit ${escape(r.assessment.reviewedOn)}; no independent specialist approval.</p>${listHTML(r.objectionTargets?.map(o=>`${o.target}: ${o.text}`),'Objection targets')}${listHTML(r.citations.map(c=>`${c.source}: ${c.locator} (${c.role})`),'Source roles and locators')}` : ''}
       ${listHTML(policy() ? r.alternatives : r.objections, 'Possible revisions')}
       ${policy() ? listHTML(r.evidenceNeeded, 'Evidence required') + `<p><strong>Source role:</strong> ${escape(r.sourceRole)}</p>` + Object.entries(r.context).map(([k,v]) => `<p><strong>${escape(CONTEXT[k])}:</strong> ${escape(v)}</p>`).join('') : ''}
       ${sourcesHTML(r.sources)}</details></article>`;
@@ -82,7 +84,7 @@ function contextView() {
 }
 function areaView() {
   $('#area-select').value = area;
-  $('#area-description').textContent = policy() ? 'Explore Norwegian policy choices and scenario assumptions. Research prototype · Bokmål dataset.' : 'Explore divine attributes, freedom, foreknowledge and providence.';
+  $('#area-description').textContent = policy() ? 'Explore Norwegian policy choices and scenario assumptions. Research prototype · Bokmål dataset.' : 'Analytic philosophical theology: divine attributes, freedom, providence and a hiddenness argument. Limited coverage, not a survey of all religions.';
   $('#hero-title').innerHTML = policy() ? 'How do your policies<br><em>fit together?</em>' : 'What else follows from<br><em>what you believe?</em>';
   $('#hero-lede').textContent = policy() ? 'Choose policies and assumptions, define a shared scenario, and inspect conditional relationships. Examples are illustrative—not party assessments.' : 'Choose your commitments. Trace consequences, points of pressure and disputed assumptions.';
   $('#template-button').textContent = policy() ? 'Start from an example' : 'Start from a position';
@@ -91,11 +93,11 @@ function areaView() {
   $('#template-list').innerHTML = dataset().templates.map(p => `<button class="template" data-template="${p.id}"><strong>${escape(p.title || p.label)}</strong><span>${escape(p.description || p.lesson)}</span></button>`).join('');
   $('#policy-context').hidden = !policy(); $('#policy-notice').hidden = !policy();
   $('#consequence-label').textContent = policy() ? 'need context' : 'consequences';
-  $('#tension-label').textContent = policy() ? 'conditional findings' : 'tensions / conflicts';
+  $('#tension-label').textContent = policy() ? 'conditional findings' : 'incompatibilities';
   $('#search').value = state().search;
   $('#method-content').innerHTML = policy()
     ? '<h1>Assumptions stay visible.</h1><p class="method-intro">The Norwegian corpus checks policy packages only under the assumptions and boundaries you supply. It neither verifies those assumptions nor rates parties.</p><div class="method-grid"><article><h2>Three kinds of statement</h2><p>Policy choices, self-imposed constraints and scenario assumptions are separate. Undecided never means rejected.</p></article><article><h2>One shared scenario</h2><p>Use the same actor, period, baseline and relevant project boundaries. Missing context prompts clarification rather than a finding.</p></article><article><h2>Conditional results</h2><p>Accounting conflicts, unsupported inferences and implementation pressures have different meanings. An unsupported inference does not prove its conclusion false.</p></article></div><div class="method-note"><p>No warnings does not establish coherence. No empirical or legal review is performed. Sources explain the framework, and evidence requirements remain visible with each result.</p><p><a href="data/norway/AUDIT.md">Read the editorial audit</a> · <a href="data/norway/README.md">Dataset documentation</a></p></div>'
-    : '<h1>Pressure is not contradiction.</h1><p class="method-intro">Formal and conceptual consequences remain separate from contested philosophical arguments. The analysis checks the explicit selections against documented rules; it does not perform general theorem proving.</p><div class="method-grid"><article><h2>Claims are atomic</h2><p>Position templates are starting points. The analysis uses your individual selections.</p></article><article><h2>Strength is visible</h2><p>Deductive relations and contested tensions are labeled separately. Conclusions are displayed without silently changing your beliefs.</p></article><article><h2>Assumptions stay exposed</h2><p>All premises must be explicitly selected. Objections, qualifications and sources remain attached.</p></article></div><div class="method-note"><p>No warnings does not establish consistency: coverage is limited to the documented rules.</p></div>';
+    : '<h1>Pressure is not contradiction.</h1><p class="method-intro">Validity and disputed premise truth are separate; a valid conditional argument need not be sound. The analysis checks the explicit selections against documented rules; it does not perform general theorem proving.</p><div class="method-grid"><article><h2>Claims are atomic</h2><p>Position templates are starting points. The analysis uses your individual selections.</p></article><article><h2>Strength is visible</h2><p>Conditional deductions, interpretive tensions and incomplete arguments are labeled separately. Conclusions are displayed without silently changing your beliefs.</p></article><article><h2>Assumptions stay exposed</h2><p>All premises must be explicitly selected. Objections, qualifications and sources remain attached.</p></article></div><div class="method-note"><p>No warnings does not establish consistency: coverage is limited to the documented rules. Displayed consequences do not trigger further rules.</p><p><a href="data/AUDIT.md">Read the philosophy editorial audit</a>. Formal checks do not constitute independent specialist review.</p></div>';
   contextView(); render();
 }
 function clearSharedAddress() { history.replaceState(null, '', location.pathname); }
